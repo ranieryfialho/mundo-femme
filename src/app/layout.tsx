@@ -3,8 +3,9 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer"; // Importação do Footer
 import { SmoothScrolling } from "@/providers/SmoothScrolling";
-import { CartDrawer } from "@/components/cart/CartDrawer"; // Importação do Carrinho
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 // Configuração das Fontes
 const cormorant = Cormorant_Garamond({ 
@@ -34,7 +35,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={cn(
-        "min-h-screen bg-brand-offwhite font-sans antialiased",
+        // Adicionei 'flex flex-col' para garantir que o footer vá para o final
+        "min-h-screen bg-brand-offwhite font-sans antialiased flex flex-col",
         cormorant.variable, 
         montserrat.variable
       )}>
@@ -47,8 +49,13 @@ export default function RootLayout({
           {/* Gaveta do Carrinho (Global, pode abrir de qualquer lugar) */}
           <CartDrawer />
           
-          {/* Conteúdo da Página */}
-          {children}
+          {/* Conteúdo da Página (Expande para empurrar o footer) */}
+          <div className="flex-1">
+            {children}
+          </div>
+
+          {/* Rodapé Global */}
+          <Footer />
           
         </SmoothScrolling>
       </body>
