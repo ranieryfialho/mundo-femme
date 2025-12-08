@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, Search, User, X } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useCartStore } from "@/lib/store"; // Conectado ao Zustand
+import { useCartStore } from "@/lib/store";
+import { SearchOverlay } from "@/components/layout/SearchOverlay";
 
 const NAV_LINKS = [
   { name: "Coleção", href: "/categoria/colecao" },
@@ -18,16 +19,14 @@ const NAV_LINKS = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   
-  // Hooks do Next.js e Zustand
   const { scrollY } = useScroll();
   const pathname = usePathname();
-  const { items, openCart } = useCartStore(); // Pegando itens e função de abrir
+  const { items, openCart } = useCartStore();
 
-  // Verifica se estamos na página inicial
   const isHome = pathname === "/";
 
-  // Fecha o menu ao redimensionar para desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -38,16 +37,14 @@ export function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Bloqueia scroll quando menu mobile está aberto
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen || isSearchOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isSearchOpen]);
 
-  // Monitora o scroll para mudar a cor do header
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = isScrolled;
     const current = latest > 50;
@@ -56,18 +53,12 @@ export function Header() {
     }
   });
 
-  // LÓGICA DE ESTILO INTELIGENTE:
-  // O Header deve ser "Sólido" (Texto Escuro) se:
-  // 1. O usuário rolou a página.
-  // 2. O menu mobile está aberto.
-  // 3. NÃO estamos na Home (Páginas de produto/categoria têm fundo branco).
   const isSolidHeader = isScrolled || isMobileMenuOpen || !isHome;
-
   const textColorClass = isSolidHeader ? "text-brand-dark" : "text-brand-white";
   
-  // Definição do Background
+  // Background dinâmico
   const bgClass = isMobileMenuOpen 
-    ? "bg-transparent" // No mobile open, transparente para não conflitar com overlay branco
+    ? "bg-transparent" 
     : isSolidHeader 
       ? "bg-brand-white/90 backdrop-blur-md shadow-sm py-3" 
       : "bg-transparent py-4 md:py-5";
@@ -85,7 +76,7 @@ export function Header() {
       >
         <div className="container mx-auto flex items-center justify-between">
           
-          {/* --- BOTÃO MENU MOBILE (ESQUERDA) --- */}
+          {/* --- ESQUERDA: MENU HAMBÚRGUER (MOBILE) --- */}
           <div className="flex items-center md:hidden z-50">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -96,7 +87,7 @@ export function Header() {
             </button>
           </div>
 
-          {/* --- LOGO --- */}
+          {/* --- CENTRO/ESQUERDA: LOGO --- */}
           <Link href="/" className="flex-shrink-0 z-50">
             <h1 className={cn(
               "font-serif font-medium tracking-widest uppercase transition-colors text-center md:text-left",
@@ -107,7 +98,7 @@ export function Header() {
             </h1>
           </Link>
 
-          {/* --- NAVEGAÇÃO DESKTOP --- */}
+          {/* --- CENTRO: NAVEGAÇÃO DESKTOP --- */}
           <nav className="hidden md:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
             {NAV_LINKS.map((item) => (
               <Link
@@ -115,7 +106,6 @@ export function Header() {
                 href={item.href}
                 className={cn(
                   "text-sm font-sans font-medium tracking-wide transition-colors",
-                  // Lógica de hover dependendo do fundo
                   !isSolidHeader 
                     ? "text-gray-200 hover:text-brand-white" 
                     : "text-gray-600 hover:text-brand-pink"
@@ -126,17 +116,22 @@ export function Header() {
             ))}
           </nav>
 
-          {/* --- ÍCONES (DIREITA) --- */}
+          {/* --- DIREITA: ÍCONES --- */}
           <div className={cn("flex items-center gap-3 md:gap-5 z-50", isMobileMenuOpen ? "text-brand-dark" : "")}>
-            <button aria-label="Buscar">
+            
+            <button 
+              aria-label="Buscar"
+              onClick={() => setIsSearchOpen(true)}
+            >
               <Search className={cn("w-5 h-5 transition-colors", textColorClass)} />
             </button>
             
+            {/* Minha Conta */}
             <button aria-label="Minha Conta" className="hidden sm:block">
               <User className={cn("w-5 h-5 transition-colors", textColorClass)} />
             </button>
 
-            {/* BOTÃO DO CARRINHO (Abre Drawer + Contador) */}
+            {/* Carrinho (Abre Drawer) */}
             <button 
               aria-label="Carrinho" 
               className="relative group pl-2"
@@ -144,7 +139,6 @@ export function Header() {
             >
               <ShoppingBag className={cn("w-5 h-5 transition-colors", textColorClass)} />
               
-              {/* Badge condicional */}
               {items.length > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-pink text-[9px] font-bold text-white animate-fade-in">
                   {items.length}
@@ -156,7 +150,13 @@ export function Header() {
         </div>
       </motion.header>
 
-      {/* --- OVERLAY MENU MOBILE --- */}
+      {/* --- COMPONENTE DE BUSCA (OVERLAY) --- */}
+      <SearchOverlay 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
+
+      {/* --- MENU MOBILE (OVERLAY) --- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div

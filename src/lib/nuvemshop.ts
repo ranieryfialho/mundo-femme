@@ -16,7 +16,6 @@ export async function getProducts(): Promise<Product[]> {
         "User-Agent": "MundoFemme (dev@loja.com)",
         "Content-Type": "application/json"
       },
-      // ALTERAÇÃO AQUI: 'no-store' garante que NUNCA pegue dados velhos/cacheados
       cache: "no-store", 
     });
 
@@ -45,4 +44,22 @@ export function formatPrice(price: string | number) {
     style: "currency",
     currency: "BRL",
   }).format(Number(price));
+}
+
+export async function searchProducts(query: string): Promise<Product[]> {
+  try {
+    const allProducts = await getProducts();
+
+    if (!query) return [];
+
+    const lowerQuery = query.toLowerCase();
+
+    return allProducts.filter((product) => 
+      product.name.pt.toLowerCase().includes(lowerQuery) ||
+      product.description.pt.toLowerCase().includes(lowerQuery)
+    );
+  } catch (error) {
+    console.error("Erro na busca:", error);
+    return [];
+  }
 }
