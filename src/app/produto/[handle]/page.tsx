@@ -3,6 +3,7 @@ import { getProductByHandle, getProducts } from "@/lib/nuvemshop";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
 import { CustomBreadcrumb } from "@/components/ui/custom-breadcrumb";
+import { RelatedProducts } from "@/components/product/RelatedProducts";
 
 interface ProductPageProps {
   params: {
@@ -24,6 +25,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+
+  const primaryCategoryHandle = product.categories[0]?.handle.pt;
 
   return (
     <main className="min-h-screen pt-24 pb-16 bg-white">
@@ -52,6 +55,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
 
       </div>
+
+      <RelatedProducts 
+        categoryHandle={primaryCategoryHandle} 
+        currentProductId={product.id} 
+      />
+      
     </main>
   );
 }
