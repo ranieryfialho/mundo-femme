@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu, Search, User, X } from "lucide-react";
+import { ShoppingBag, Menu, Search, User, X, Heart } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store";
+import { useWishlistStore } from "@/lib/wishlist";
 import { SearchOverlay } from "@/components/layout/SearchOverlay";
 
 const NAV_LINKS = [
@@ -23,7 +24,9 @@ export function Header() {
   
   const { scrollY } = useScroll();
   const pathname = usePathname();
-  const { items, openCart } = useCartStore();
+  
+  const { items: cartItems, openCart } = useCartStore();
+  const { items: wishlistItems, openWishlist } = useWishlistStore();
 
   const isHome = pathname === "/";
 
@@ -56,7 +59,6 @@ export function Header() {
   const isSolidHeader = isScrolled || isMobileMenuOpen || !isHome;
   const textColorClass = isSolidHeader ? "text-brand-dark" : "text-brand-white";
   
-  // Background dinâmico
   const bgClass = isMobileMenuOpen 
     ? "bg-transparent" 
     : isSolidHeader 
@@ -76,7 +78,7 @@ export function Header() {
       >
         <div className="container mx-auto flex items-center justify-between">
           
-          {/* --- ESQUERDA: MENU HAMBÚRGUER (MOBILE) --- */}
+          {/* --- BOTÃO MENU MOBILE (ESQUERDA) --- */}
           <div className="flex items-center md:hidden z-50">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -87,7 +89,7 @@ export function Header() {
             </button>
           </div>
 
-          {/* --- CENTRO/ESQUERDA: LOGO --- */}
+          {/* --- LOGO --- */}
           <Link href="/" className="flex-shrink-0 z-50">
             <h1 className={cn(
               "font-serif font-medium tracking-widest uppercase transition-colors text-center md:text-left",
@@ -98,7 +100,7 @@ export function Header() {
             </h1>
           </Link>
 
-          {/* --- CENTRO: NAVEGAÇÃO DESKTOP --- */}
+          {/* --- NAVEGAÇÃO DESKTOP --- */}
           <nav className="hidden md:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
             {NAV_LINKS.map((item) => (
               <Link
@@ -116,32 +118,45 @@ export function Header() {
             ))}
           </nav>
 
-          {/* --- DIREITA: ÍCONES --- */}
-          <div className={cn("flex items-center gap-3 md:gap-5 z-50", isMobileMenuOpen ? "text-brand-dark" : "")}>
+          {/* --- ÍCONES (DIREITA) --- */}
+          <div className={cn("flex items-center gap-2 md:gap-4 z-50", isMobileMenuOpen ? "text-brand-dark" : "")}>
             
+            {/* 1. Busca */}
             <button 
               aria-label="Buscar"
               onClick={() => setIsSearchOpen(true)}
+              className="p-1 md:p-2"
             >
               <Search className={cn("w-5 h-5 transition-colors", textColorClass)} />
             </button>
             
-            {/* Minha Conta */}
-            <button aria-label="Minha Conta" className="hidden sm:block">
-              <User className={cn("w-5 h-5 transition-colors", textColorClass)} />
+            {/* 2. Wishlist (Favoritos) */}
+            <button 
+              aria-label="Favoritos" 
+              onClick={openWishlist}
+              className="relative group p-1 md:p-2 hidden sm:block"
+            >
+              <Heart className={cn("w-5 h-5 transition-colors", textColorClass)} />
+              {wishlistItems.length > 0 && (
+                <span className="absolute top-0 right-0 flex h-2 w-2 rounded-full bg-brand-pink"></span>
+              )}
             </button>
 
-            {/* Carrinho (Abre Drawer) */}
+            {/* 3. Minha Conta (Link) */}
+            <Link href="/minha-conta" className="p-1 md:p-2 hidden sm:block" aria-label="Minha Conta">
+              <User className={cn("w-5 h-5 transition-colors", textColorClass)} />
+            </Link>
+
+            {/* 4. Carrinho */}
             <button 
               aria-label="Carrinho" 
-              className="relative group pl-2"
+              className="relative group p-1 md:p-2 pl-2"
               onClick={openCart}
             >
               <ShoppingBag className={cn("w-5 h-5 transition-colors", textColorClass)} />
-              
-              {items.length > 0 && (
+              {cartItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-pink text-[9px] font-bold text-white animate-fade-in">
-                  {items.length}
+                  {cartItems.length}
                 </span>
               )}
             </button>
@@ -150,13 +165,13 @@ export function Header() {
         </div>
       </motion.header>
 
-      {/* --- COMPONENTE DE BUSCA (OVERLAY) --- */}
+      {/* --- OVERLAY DE BUSCA --- */}
       <SearchOverlay 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
       />
 
-      {/* --- MENU MOBILE (OVERLAY) --- */}
+      {/* --- MENU MOBILE --- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -188,11 +203,21 @@ export function Header() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="mt-8 pt-8 border-t border-gray-100 w-full flex flex-col items-center gap-4"
+                className="mt-8 pt-8 border-t border-gray-100 w-full flex flex-col items-center gap-6"
               >
-                <Link href="/conta" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-gray-500 font-sans">
+                <Link 
+                  href="/minha-conta" 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="flex items-center gap-2 text-gray-500 font-sans text-lg"
+                >
                   <User size={20} /> Minha Conta
                 </Link>
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); openWishlist(); }} 
+                  className="flex items-center gap-2 text-gray-500 font-sans text-lg"
+                >
+                  <Heart size={20} /> Favoritos
+                </button>
               </motion.div>
             </nav>
           </motion.div>
