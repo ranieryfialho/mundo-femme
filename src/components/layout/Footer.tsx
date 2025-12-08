@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, Facebook, Twitter, Mail, ArrowRight } from "lucide-react";
+import { Instagram, Facebook, Twitter, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Footer() {
@@ -59,10 +59,10 @@ export function Footer() {
           <div className="space-y-6">
             <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Sobre</h5>
             <ul className="space-y-4 font-sans text-sm text-gray-400">
-              <li><Link href="#" className="hover:text-white transition-colors">Nossa História</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Sustentabilidade</Link></li>
+              <li><Link href="/sobre" className="hover:text-white transition-colors">Nossa História</Link></li>
+              <li><Link href="/sobre" className="hover:text-white transition-colors">Sustentabilidade</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Carreiras</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Contato</Link></li>
+              <li><Link href="/contato" className="hover:text-white transition-colors">Contato</Link></li>
             </ul>
           </div>
 
@@ -70,10 +70,13 @@ export function Footer() {
           <div className="space-y-6">
             <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Ajuda</h5>
             <ul className="space-y-4 font-sans text-sm text-gray-400">
-              <li><Link href="#" className="hover:text-white transition-colors">Trocas e Devoluções</Link></li>
+              <li><Link href="/trocas" className="hover:text-white transition-colors">Trocas e Devoluções</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Envio e Entregas</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Guia de Tamanhos</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors flex items-center gap-2"><Mail size={14}/> Fale Conosco</Link></li>
+              
+              {/* LINK ATUALIZADO AQUI: */}
+              <li><Link href="/guia-de-tamanhos" className="hover:text-white transition-colors">Guia de Tamanhos</Link></li>
+              
+              <li><Link href="/contato" className="hover:text-white transition-colors flex items-center gap-2"><Mail size={14}/> Fale Conosco</Link></li>
             </ul>
           </div>
         </div>
@@ -82,8 +85,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs text-gray-500 font-sans">
           <p>&copy; {new Date().getFullYear()} Mundo Femme. Todos os direitos reservados.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <span>Privacidade</span>
-            <span>Termos de Uso</span>
+            <span className="cursor-pointer hover:text-white transition-colors">Privacidade</span>
+            <span className="cursor-pointer hover:text-white transition-colors">Termos de Uso</span>
           </div>
         </div>
 

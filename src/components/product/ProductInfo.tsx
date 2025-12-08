@@ -8,6 +8,7 @@ import { Truck, ShieldCheck, Ruler, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist";
 import { cn } from "@/lib/utils";
+import { SizeGuideModal } from "./SizeGuideModal";
 
 interface ProductInfoProps {
   product: Product;
@@ -17,15 +18,20 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const { hasItem, toggleItem } = useWishlistStore();
   const isWishlisted = hasItem(product.id);
 
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
     product?.variants?.length > 0 ? product.variants[0].id : null
   );
   const addItem = useCartStore((state) => state.addItem);
 
+
   const selectedVariant = product?.variants?.find(v => v.id === selectedVariantId) || product?.variants?.[0];
+  
   const rawPrice = selectedVariant?.price || product?.promotional_price || product?.price || "0";
   const priceString = String(rawPrice).replace(',', '.');
   const finalPrice = isNaN(Number(priceString)) ? 0 : Number(priceString);
+
   const hasMultipleVariants = product?.variants?.length > 1;
 
   const getVariantLabel = (variant: any, index: number) => {
@@ -38,14 +44,16 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const handleAddToCart = () => {
     const variantIdToAdd = selectedVariantId || product?.variants?.[0]?.id;
     if (!variantIdToAdd) return;
+
     const variantObj = product.variants.find(v => v.id === variantIdToAdd);
     const sizeName = variantObj ? getVariantLabel(variantObj, 0) : "Padrão";
+
     addItem(product, sizeName, variantIdToAdd);
   };
 
   return (
     <div className="space-y-8 sticky top-24">
-      {/* Título e Preço */}
+      
       <div className="space-y-2">
         <h1 className="font-serif text-4xl md:text-5xl text-brand-dark font-light">
           {product.name.pt}
@@ -57,23 +65,23 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </div>
       </div>
 
-      {/* Descrição Curta */}
       <div 
         className="prose prose-sm text-gray-600 font-sans leading-relaxed line-clamp-3"
         dangerouslySetInnerHTML={{ __html: product.description.pt }} 
       />
 
-      {/* Seleção de Variantes */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <span className="text-sm font-semibold uppercase tracking-wide">
             {hasMultipleVariants ? "Escolha a Opção:" : "Opção Selecionada:"}
           </span>
-          {hasMultipleVariants && (
-            <button className="text-xs underline text-gray-500 flex items-center gap-1">
-              <Ruler size={14} /> Guia de Medidas
-            </button>
-          )}
+          
+          <button 
+            onClick={() => setIsSizeGuideOpen(true)}
+            className="text-xs underline text-gray-500 flex items-center gap-1 hover:text-brand-pink transition-colors cursor-pointer"
+          >
+            <Ruler size={14} /> Guia de Medidas
+          </button>
         </div>
 
         {hasMultipleVariants ? (
@@ -82,11 +90,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
               <button
                 key={variant.id}
                 onClick={() => setSelectedVariantId(variant.id)}
-                className={`min-w-[3rem] px-4 h-12 flex items-center justify-center border text-sm transition-all uppercase font-medium ${
+                className={cn(
+                  "min-w-[3rem] px-4 h-12 flex items-center justify-center border text-sm transition-all uppercase font-medium",
                   selectedVariantId === variant.id
                     ? "border-brand-dark bg-brand-dark text-white"
                     : "border-gray-200 text-gray-900 hover:border-brand-dark"
-                }`}
+                )}
               >
                 {getVariantLabel(variant, index)}
               </button>
@@ -99,7 +108,6 @@ export function ProductInfo({ product }: ProductInfoProps) {
         )}
       </div>
 
-      {/* --- BOTÕES DE AÇÃO (ATUALIZADO) --- */}
       <div className="flex gap-4 pt-4">
         <Button 
           onClick={handleAddToCart}
@@ -108,7 +116,6 @@ export function ProductInfo({ product }: ProductInfoProps) {
           Adicionar à Sacola
         </Button>
 
-        {/* Botão de Favoritar */}
         <button 
           onClick={() => toggleItem(product)}
           className={cn(
@@ -117,13 +124,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
               ? "border-brand-pink bg-brand-pink/10 text-brand-pink" 
               : "border-gray-200 text-gray-400 hover:border-brand-dark hover:text-brand-dark"
           )}
-          aria-label="Favoritar"
+          aria-label="Adicionar aos favoritos"
         >
           <Heart size={24} className={cn(isWishlisted && "fill-current")} />
         </button>
       </div>
 
-      {/* Selos de Confiança */}
       <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-100">
         <div className="flex items-center gap-3 text-gray-600">
           <Truck className="w-5 h-5 text-brand-pink" />
@@ -134,6 +140,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
           <span className="text-xs font-medium">Garantia de 30 dias</span>
         </div>
       </div>
+
+      <SizeGuideModal 
+        isOpen={isSizeGuideOpen} 
+        onClose={() => setIsSizeGuideOpen(false)} 
+      />
+
     </div>
   );
 }
