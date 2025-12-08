@@ -12,7 +12,7 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
         smoothWheel: true,
       }}
     >
-      {children}
+      {children as any}
     </ReactLenis>
   );
 }
