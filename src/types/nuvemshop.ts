@@ -5,11 +5,18 @@ export interface ProductImage {
   alt?: string[];
 }
 
+export interface VariantValue {
+  pt: string;
+  es?: string;
+  en?: string;
+}
+
 export interface ProductVariant {
   id: number;
   price: string;
   promotional_price: string | null;
   stock: number;
+  values: VariantValue[];
 }
 
 export interface Category {
