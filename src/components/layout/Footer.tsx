@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, Facebook, Twitter, Mail } from "lucide-react";
+import { Instagram, Facebook, Twitter, Mail, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Footer() {
@@ -33,20 +33,36 @@ export function Footer() {
         </div>
 
         {/* --- SEÇÃO DO MEIO: LINKS --- */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
+          
           {/* Coluna 1: Marca */}
           <div className="space-y-6">
-            <h4 className="font-serif text-2xl uppercase tracking-widest">Mundo Femme</h4>
-            <div className="flex gap-4">
+            <h4 className="font-serif text-2xl uppercase tracking-widest">Mundo Femme.</h4>
+            <p className="font-sans text-gray-500 text-sm max-w-xs leading-relaxed">
+              Moda íntima e fitness que une sofisticação, conforto e tecnologia para o seu dia a dia.
+            </p>
+            <div className="flex gap-4 pt-2">
               <Link href="#" className="text-gray-400 hover:text-brand-pink transition-colors"><Instagram size={20} /></Link>
               <Link href="#" className="text-gray-400 hover:text-brand-pink transition-colors"><Facebook size={20} /></Link>
               <Link href="#" className="text-gray-400 hover:text-brand-pink transition-colors"><Twitter size={20} /></Link>
             </div>
           </div>
 
-          {/* Coluna 2: Shop */}
+          {/* Coluna 2: Institucional */}
           <div className="space-y-6">
-            <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Loja</h5>
+            <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Institucional</h5>
+            <ul className="space-y-4 font-sans text-sm text-gray-400">
+              <li><Link href="/sobre" className="hover:text-white transition-colors">Nossa História</Link></li>
+              <li><Link href="/trocas" className="hover:text-white transition-colors">Trocas e Devoluções</Link></li>
+              <li><Link href="/envio-e-entregas" className="hover:text-white transition-colors">Envio e Entregas</Link></li>
+              <li><Link href="/guia-de-tamanhos" className="hover:text-white transition-colors">Guia de Tamanhos</Link></li>
+              <li><Link href="/contato" className="hover:text-white transition-colors flex items-center gap-2"><Mail size={14}/> Fale Conosco</Link></li>
+            </ul>
+          </div>
+
+          {/* Coluna 3: Loja */}
+          <div className="space-y-6">
+            <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Shop</h5>
             <ul className="space-y-4 font-sans text-sm text-gray-400">
               <li><Link href="/categoria/colecao" className="hover:text-white transition-colors">Nova Coleção</Link></li>
               <li><Link href="/categoria/lingerie" className="hover:text-white transition-colors">Lingerie</Link></li>
@@ -55,39 +71,31 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Coluna 3: Institucional */}
-          <div className="space-y-6">
-            <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Sobre</h5>
-            <ul className="space-y-4 font-sans text-sm text-gray-400">
-              <li><Link href="/sobre" className="hover:text-white transition-colors">Nossa História</Link></li>
-              <li><Link href="/sobre" className="hover:text-white transition-colors">Sustentabilidade</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Carreiras</Link></li>
-              <li><Link href="/contato" className="hover:text-white transition-colors">Contato</Link></li>
-            </ul>
-          </div>
-
-          {/* Coluna 4: Ajuda */}
-          <div className="space-y-6">
-            <h5 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-beige">Ajuda</h5>
-            <ul className="space-y-4 font-sans text-sm text-gray-400">
-              <li><Link href="/trocas" className="hover:text-white transition-colors">Trocas e Devoluções</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Envio e Entregas</Link></li>
-              
-              {/* LINK ATUALIZADO AQUI: */}
-              <li><Link href="/guia-de-tamanhos" className="hover:text-white transition-colors">Guia de Tamanhos</Link></li>
-              
-              <li><Link href="/contato" className="hover:text-white transition-colors flex items-center gap-2"><Mail size={14}/> Fale Conosco</Link></li>
-            </ul>
-          </div>
         </div>
 
-        {/* --- SEÇÃO INFERIOR: DIREITOS --- */}
+        {/* --- SEÇÃO INFERIOR: DIREITOS & CRÉDITOS --- */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs text-gray-500 font-sans">
-          <p>&copy; {new Date().getFullYear()} Mundo Femme. Todos os direitos reservados.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <span className="cursor-pointer hover:text-white transition-colors">Privacidade</span>
-            <span className="cursor-pointer hover:text-white transition-colors">Termos de Uso</span>
+          
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p>&copy; {new Date().getFullYear()} Mundo Femme. Todos os direitos reservados.</p>
+            <div className="flex gap-6">
+              <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
+              <Link href="/termos-de-uso" className="hover:text-white transition-colors">Termos de Uso</Link>
+            </div>
           </div>
+
+          <div className="mt-4 md:mt-0 flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
+            <span>Desenvolvido por</span>
+            <a 
+              href="https://rafiweb.com.br/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-brand-pink font-bold hover:underline flex items-center gap-1"
+            >
+              Rafi Web <ExternalLink size={10} />
+            </a>
+          </div>
+
         </div>
 
       </div>
