@@ -7,7 +7,8 @@ import { getProducts } from "@/lib/nuvemshop";
 import { ProductCard } from "@/components/product/ProductCard";
 
 export default async function Home() {
-  const products = await getProducts();
+  const allProducts = await getProducts();
+  const products = allProducts.slice(0, 4);
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -24,7 +25,7 @@ export default async function Home() {
             </p>
           </div>
 
-          {products.length > 0 ? (
+          {products. length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
