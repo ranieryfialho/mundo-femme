@@ -2,19 +2,19 @@ export interface ProductImage {
   id: number;
   src: string;
   position: number;
-  alt?: string[];
+  alt?:  string[];
 }
 
 export interface VariantValue {
   pt: string;
-  es?: string;
+  es?:  string;
   en?: string;
 }
 
 export interface ProductVariant {
   id: number;
   price: string;
-  promotional_price: string | null;
+  promotional_price:  string | null;
   stock: number | null;
   values: VariantValue[];
 }
@@ -42,8 +42,9 @@ export interface Product {
   };
   published: boolean;
   images: ProductImage[];
-  variants: ProductVariant[];
+  variants:  ProductVariant[];
   promotional_price: string | null;
   price: string;
   categories: Category[];
+  tags?:  string | string[];
 }

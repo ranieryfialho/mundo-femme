@@ -1,12 +1,12 @@
 import { Product } from "@/types/nuvemshop";
 
-const STORE_ID = process.env. NUVEMSHOP_STORE_ID;
-const ACCESS_TOKEN = process.env.NUVEMSHOP_ACCESS_TOKEN;
+const STORE_ID = process.env.NUVEMSHOP_STORE_ID;
+const ACCESS_TOKEN = process.env. NUVEMSHOP_ACCESS_TOKEN;
 const API_URL = `https://api.nuvemshop.com.br/v1/${STORE_ID}`;
 
 export async function getProducts(): Promise<Product[]> {
-  if (! STORE_ID || !ACCESS_TOKEN) {
-    console.error("❌ [Nuvemshop] Credenciais faltando no . env.local");
+  if (!STORE_ID || !ACCESS_TOKEN) {
+    console.error("❌ [Nuvemshop] Credenciais faltando no . env. local");
     return [];
   }
 
@@ -33,9 +33,9 @@ export async function getProducts(): Promise<Product[]> {
         break;
       }
 
-      const data: Product[] = await res.json();
+      const data:  Product[] = await res.json();
       
-      if (data.length === 0) {
+      if (data. length === 0) {
         hasMore = false;
       } else {
         allProducts = [... allProducts, ...data];
@@ -48,7 +48,6 @@ export async function getProducts(): Promise<Product[]> {
       }
     }
 
-    // Filtra apenas produtos publicados
     return allProducts.filter(p => p.published);
 
   } catch (error) {
@@ -72,11 +71,11 @@ export async function getProductsByCategory(categoryHandle: string): Promise<Pro
 export function formatPrice(price: string | number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "BRL",
+    currency:  "BRL",
   }).format(Number(price));
 }
 
-export async function searchProducts(query: string): Promise<Product[]> {
+export async function searchProducts(query:  string): Promise<Product[]> {
   try {
     const allProducts = await getProducts();
 
@@ -85,7 +84,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
     const lowerQuery = query.toLowerCase();
 
     return allProducts.filter((product) => 
-      product.name. pt.toLowerCase().includes(lowerQuery) ||
+      product.name.pt.toLowerCase().includes(lowerQuery) ||
       product.description.pt.toLowerCase().includes(lowerQuery)
     );
   } catch (error) {

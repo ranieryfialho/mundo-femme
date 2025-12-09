@@ -8,7 +8,26 @@ import { ProductCard } from "@/components/product/ProductCard";
 
 export default async function Home() {
   const allProducts = await getProducts();
-  const products = allProducts.slice(0, 4);
+  
+  // Filtra produtos com a tag "invisive" (com verificação segura)
+  const invisiveProducts = allProducts.filter(product => {
+    // Verifica se tags existe e é um array
+    if (Array.isArray(product.tags)) {
+      return product.tags. some(tag => 
+        typeof tag === 'string' && tag.toLowerCase().includes('invisive')
+      );
+    }
+    // Verifica se tags é uma string
+    if (typeof product.tags === 'string') {
+      return product. tags.toLowerCase().includes('invisive');
+    }
+    return false;
+  });
+
+  // Se não houver produtos com a tag, mostra os 8 primeiros
+  const displayProducts = invisiveProducts.length > 0 
+    ? invisiveProducts.slice(0, 8)
+    : allProducts. slice(0, 8);
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -17,17 +36,17 @@ export default async function Home() {
       <section className="py-20 px-6 md:px-12 bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="font-serif text-4xl md:text-5xl text-brand-dark">
-              Curadoria Exclusiva
+            <h2 className="font-serif text-4xl md: text-5xl text-brand-dark">
+              Coleção Invisive
             </h2>
             <p className="text-gray-500 font-sans max-w-xl mx-auto">
-              As peças mais desejadas da nossa coleção, selecionadas para você.
+              Peças que se moldam ao seu corpo com invisibilidade e conforto absoluto. 
             </p>
           </div>
 
-          {products. length > 0 ? (
+          {displayProducts. length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-              {products.map((product) => (
+              {displayProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -41,7 +60,6 @@ export default async function Home() {
       <FeaturedBanner />
       <BenefitsBar />
       <BlogGrid />
-
     </main>
   );
 }
