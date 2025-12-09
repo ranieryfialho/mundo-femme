@@ -10,17 +10,21 @@ export async function getProducts(): Promise<Product[]> {
   }
 
   try {
-    const res = await fetch(`${API_URL}/products?per_page=20`, {
+    const res = await fetch(`${API_URL}/products?per_page=50`, {
       headers: {
         "Authentication": `bearer ${ACCESS_TOKEN}`,
         "User-Agent": "MundoFemme (dev@loja.com)",
         "Content-Type": "application/json"
       },
-      cache: "no-store", 
+      next: { revalidate: 60 }
     });
 
     if (!res.ok) throw new Error("Falha na API");
-    return await res.json();
+    
+    const data: Product[] = await res.json();
+
+    return data.filter(product => product.published);
+
   } catch (error) {
     console.error(error);
     return [];

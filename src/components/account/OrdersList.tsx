@@ -3,7 +3,7 @@
 import { Package, ExternalLink, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const NUVEMSHOP_LOGIN_URL = "https://devmundofemme.lojavirtualnuvem.com.br/account/login/";
+const NUVEMSHOP_LOGIN_URL = "https://www.mundofemme.com.br/account/login/";
 
 export function OrdersList() {
   return (

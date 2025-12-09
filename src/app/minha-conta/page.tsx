@@ -9,7 +9,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 // URL de login direto da sua loja Nuvemshop
-const NUVEMSHOP_LOGIN_URL = "https://devmundofemme.lojavirtualnuvem.com.br/account/login/";
+const NUVEMSHOP_LOGIN_URL = "https://www.mundofemme.com.br/account/login/";
 
 // Definição das Abas
 type TabType = "wishlist" | "orders" | "settings";

@@ -15,7 +15,7 @@ export interface ProductVariant {
   id: number;
   price: string;
   promotional_price: string | null;
-  stock: number;
+  stock: number | null;
   values: VariantValue[];
 }
 
@@ -40,6 +40,7 @@ export interface Product {
   handle: {
     pt: string;
   };
+  published: boolean;
   images: ProductImage[];
   variants: ProductVariant[];
   promotional_price: string | null;
