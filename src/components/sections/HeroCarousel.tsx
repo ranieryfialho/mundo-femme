@@ -6,6 +6,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link"; // <--- Importante: Adicionado para funcionar o link
 
 const SLIDES = [
   {
@@ -14,7 +15,8 @@ const SLIDES = [
     preTitle: "Coleção Intimates",
     title: "Delicadeza & \nConforto",
     subtitle: "Rendas exclusivas e tecidos que abraçam o corpo.",
-    buttonText: "Ver Lingerie",
+    buttonText: "Ir para a Loja", // <--- Alterado conforme pedido
+    href: "/produtos",            // <--- Rota da nova página de produtos
     position: "center",
   },
   {
@@ -24,6 +26,7 @@ const SLIDES = [
     title: "Movimento \nLivre",
     subtitle: "Tecnologia e design para seu melhor desempenho.",
     buttonText: "Ver Fitness",
+    href: "/categoria/fitness",   // <--- Link específico
     position: "left",
   },
   {
@@ -33,6 +36,7 @@ const SLIDES = [
     title: "Verão \n2025",
     subtitle: "Tons terrosos e nude para a nova estação.",
     buttonText: "Descobrir",
+    href: "/categoria/colecao",   // <--- Link específico
     position: "right",
   }
 ];
@@ -66,6 +70,7 @@ export function HeroCarousel() {
             <div className="relative h-full min-w-0 flex-[0_0_100%]" key={slide.id}>
               
               <div className="absolute inset-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={slide.image} 
                   alt={slide.title}
@@ -111,11 +116,14 @@ export function HeroCarousel() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.9, duration: 0.8 }}
                   >
-                    <Button 
-                      className="rounded-none bg-brand-white text-brand-dark hover:bg-brand-pink hover:text-white px-8 py-7 uppercase tracking-widest text-xs font-bold transition-all duration-300"
-                    >
-                      {slide.buttonText}
-                    </Button>
+                    {/* ADICIONADO O LINK AQUI PARA O BOTÃO FUNCIONAR */}
+                    <Link href={slide.href}>
+                      <Button 
+                        className="rounded-none bg-brand-white text-brand-dark hover:bg-brand-pink hover:text-white px-8 py-7 uppercase tracking-widest text-xs font-bold transition-all duration-300"
+                      >
+                        {slide.buttonText}
+                      </Button>
+                    </Link>
                   </motion.div>
 
                 </div>

@@ -10,11 +10,12 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist";
 import { SearchOverlay } from "@/components/layout/SearchOverlay";
 
+// --- MENU ATUALIZADO ---
 const NAV_LINKS = [
-  { name: "Coleção", href: "/categoria/colecao" },
-  { name: "Lingerie", href: "/categoria/lingerie" },
+  { name: "Loja", href: "/produtos" },
+  { name: "Coleções", href: "/categoria/colecao" },
+  { name: "Moda Íntima", href: "/categoria/lingerie" },
   { name: "Fitness", href: "/categoria/fitness" },
-  { name: "Best Sellers", href: "/categoria/best-sellers" },
 ];
 
 export function Header() {

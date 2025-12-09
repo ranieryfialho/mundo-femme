@@ -1,31 +1,17 @@
-import { getProductsByCategory } from "@/lib/nuvemshop";
+import { getProducts } from "@/lib/nuvemshop";
 import { ProductCard } from "@/components/product/ProductCard";
 import { CustomBreadcrumb } from "@/components/ui/custom-breadcrumb";
 import { FilterBar } from "@/components/catalog/FilterBar";
 
-interface CategoryPageProps {
-  params: { slug: string };
+interface ShopPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-function formatTitle(slug: string) {
-  const titles: Record<string, string> = {
-    "colecao": "Coleções",
-    "lingerie": "Moda Íntima",
-    "fitness": "Moda Fitness",
-    "best-sellers": "Mais Vendidos"
-  };
-
-  return titles[slug] || slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-}
-
-export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
-  const resolvedParams = await Promise.resolve(params);
+export default async function ShopPage({ searchParams }: ShopPageProps) {
+  let products = await getProducts();
   const resolvedSearchParams = await Promise.resolve(searchParams);
   
-  let products = await getProductsByCategory(resolvedParams.slug);
-  const title = formatTitle(resolvedParams.slug);
-
+  // 1. Filtro de Tamanho
   const sizeFilter = resolvedSearchParams.size as string;
   if (sizeFilter) {
     products = products.filter(product => 
@@ -35,6 +21,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     );
   }
 
+  // 2. Ordenação
   const sort = resolvedSearchParams.sort as string;
   if (sort) {
     products.sort((a, b) => {
@@ -55,23 +42,26 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     <main className="min-h-screen pt-24 pb-16 bg-white">
       <div className="container mx-auto px-4 md:px-8">
         
+        {/* Cabeçalho da Página */}
         <div className="mb-8">
           <CustomBreadcrumb 
             items={[
-              { label: "Categoria" },
-              { label: title }
+              { label: "Home", href: "/" },
+              { label: "Loja Completa" }
             ]} 
           />
           <h1 className="font-serif text-4xl md:text-5xl text-brand-dark mt-4 mb-2">
-            {title}
+            Loja Completa
           </h1>
           <p className="font-sans text-gray-500 font-light text-sm">
-            {products.length} produtos encontrados
+            {products.length} peças encontradas
           </p>
         </div>
 
+        {/* Barra de Filtros (Reutilizada) */}
         <FilterBar />
 
+        {/* Grid de Produtos */}
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
             {products.map((product) => (
@@ -81,7 +71,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         ) : (
           <div className="py-24 text-center space-y-4 border-t border-gray-100">
             <h3 className="font-serif text-2xl text-gray-400">
-              Nenhum produto encontrado com esses filtros.
+              Nenhum produto encontrado.
             </h3>
             <p className="font-sans text-gray-500">
               Tente limpar os filtros para ver mais opções.
