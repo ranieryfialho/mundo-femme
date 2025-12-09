@@ -1,12 +1,12 @@
 import { Product } from "@/types/nuvemshop";
 
-const STORE_ID = process.env.NUVEMSHOP_STORE_ID;
-const ACCESS_TOKEN = process.env. NUVEMSHOP_ACCESS_TOKEN;
+const STORE_ID = process.env. NUVEMSHOP_STORE_ID;
+const ACCESS_TOKEN = process.env.NUVEMSHOP_ACCESS_TOKEN;
 const API_URL = `https://api.nuvemshop.com.br/v1/${STORE_ID}`;
 
 export async function getProducts(): Promise<Product[]> {
   if (! STORE_ID || !ACCESS_TOKEN) {
-    console.error("❌ [Nuvemshop] Credenciais faltando no . env. local");
+    console.error("❌ [Nuvemshop] Credenciais faltando no . env.local");
     return [];
   }
 
@@ -14,14 +14,9 @@ export async function getProducts(): Promise<Product[]> {
     let allProducts: Product[] = [];
     let page = 1;
     let hasMore = true;
-
-    console.log("==========================================");
-    console.log("🔍 [API] Buscando produtos da Nuvemshop...");
     
     while (hasMore) {
       const url = `${API_URL}/products?per_page=50&page=${page}&_t=${Date.now()}`;
-      
-      console.log(`📄 Buscando página ${page}... `);
 
       const res = await fetch(url, {
         headers: {
@@ -29,22 +24,21 @@ export async function getProducts(): Promise<Product[]> {
           "User-Agent": "MundoFemme (dev@loja.com)",
           "Content-Type": "application/json"
         },
-        cache:  "no-store",
+        cache: "no-store",
         next: { revalidate: 0 }
       });
 
       if (!res.ok) {
-        console.error(`❌ [API Error] Status: ${res. status}`);
+        console.error(`❌ [Nuvemshop API] Erro ${res.status}`);
         break;
       }
 
-      const data:  Product[] = await res.json();
+      const data: Product[] = await res.json();
       
-      if (data. length === 0) {
+      if (data.length === 0) {
         hasMore = false;
       } else {
         allProducts = [... allProducts, ...data];
-        console.log(`   ✅ Recebidos ${data. length} produtos (Total acumulado: ${allProducts.length})`);
         
         if (data.length < 50) {
           hasMore = false;
@@ -54,15 +48,11 @@ export async function getProducts(): Promise<Product[]> {
       }
     }
 
-    console.log("==========================================");
-    console.log(`📦 [API] Total final: ${allProducts.length} produtos`);
-    console.log("==========================================\n");
-
-    // RETORNA TODOS OS PRODUTOS (sem filtro de imagem)
-    return allProducts;
+    // Filtra apenas produtos publicados
+    return allProducts.filter(p => p.published);
 
   } catch (error) {
-    console.error("Erro no getProducts:", error);
+    console.error("❌ [Nuvemshop] Erro ao buscar produtos:", error);
     return [];
   }
 }
@@ -82,24 +72,24 @@ export async function getProductsByCategory(categoryHandle: string): Promise<Pro
 export function formatPrice(price: string | number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency:  "BRL",
+    currency: "BRL",
   }).format(Number(price));
 }
 
-export async function searchProducts(query:  string): Promise<Product[]> {
+export async function searchProducts(query: string): Promise<Product[]> {
   try {
     const allProducts = await getProducts();
 
-    if (! query) return [];
+    if (!query) return [];
 
     const lowerQuery = query.toLowerCase();
 
-    return allProducts. filter((product) => 
-      product.name.pt.toLowerCase().includes(lowerQuery) ||
+    return allProducts.filter((product) => 
+      product.name. pt.toLowerCase().includes(lowerQuery) ||
       product.description.pt.toLowerCase().includes(lowerQuery)
     );
   } catch (error) {
-    console.error("Erro na busca:", error);
+    console.error("❌ [Nuvemshop] Erro na busca:", error);
     return [];
   }
 }
