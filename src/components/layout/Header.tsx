@@ -13,7 +13,7 @@ import { SearchOverlay } from "@/components/layout/SearchOverlay";
 // --- MENU ATUALIZADO ---
 const NAV_LINKS = [
   { name: "Loja", href: "/produtos" },
-  { name: "Coleções", href: "/categoria/colecao" },
+  { name: "Coleções", href: "/categoria/colecoes" },
   { name: "Moda Íntima", href: "/categoria/lingerie" },
   { name: "Fitness", href: "/categoria/fitness" },
 ];
