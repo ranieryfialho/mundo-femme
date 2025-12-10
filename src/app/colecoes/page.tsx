@@ -6,22 +6,15 @@ import { ArrowRight } from "lucide-react";
 
 const COLLECTION_IMAGES: Record<string, string> = {
   "colecao": "https://d1a9qnv764bsoo.cloudfront.net/stores/002/359/702/categories/captura-de-tela-de-2025-12-10-13-47-18-4f3123291bee40531b17653871964738-1024-1024.png",
-  
-  // Exemplo para futuras coleções
-  "verao": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2070&auto=format&fit=crop",
 };
 
-// Categorias que não devem aparecer na lista
 const EXCLUDED_HANDLES = ["feminino", "masculino", "infantil"];
 
 export default async function CollectionsPage() {
   const allCategories = await getCategories();
 
   const collections = allCategories.filter(cat => {
-    // 1. Apenas categorias principais (sem pai)
     const isRoot = !cat.parent || cat.parent === null;
-    
-    // 2. Remove as categorias excluídas
     const handle = cat.handle.pt.toLowerCase();
     const isNotExcluded = !EXCLUDED_HANDLES.includes(handle);
 
@@ -51,7 +44,6 @@ export default async function CollectionsPage() {
           {collections.map((collection) => {
             const handleKey = collection.handle.pt.toLowerCase();
             
-            // Pega a imagem do mapa manual ou usa um placeholder
             const bgImage = COLLECTION_IMAGES[handleKey] || 
                             "https://d1a9qnv764bsoo.cloudfront.net/stores/002/359/702/categories/captura-de-tela-de-2025-12-10-13-47-18-4f3123291bee40531b17653871964738-1024-1024.png"; 
 
@@ -70,10 +62,8 @@ export default async function CollectionsPage() {
                   sizes="100vw"
                 />
                 
-                {/* Overlay Escuro */}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
                 
-                {/* Conteúdo */}
                 <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
                   <span className="text-white/90 font-sans text-xs uppercase tracking-widest mb-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
                     Ver Produtos

@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**", // Permite tudo (útil em dev)
+        hostname: "**",
       },
       {
         protocol: "https",
-        hostname: "d1a9qnv764bsoo.cloudfront.net", // Domínio específico da sua imagem
+        hostname: "d1a9qnv764bsoo.cloudfront.net",
       }
     ],
   },

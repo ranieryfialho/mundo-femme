@@ -34,7 +34,7 @@ export interface Category {
   };
   image?: {
     src: string;
-  } | null; // <--- CAMPO NOVO ADICIONADO
+  } | null;
 }
 
 export interface Product {
