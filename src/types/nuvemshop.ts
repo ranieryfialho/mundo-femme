@@ -32,6 +32,9 @@ export interface Category {
   description?: {
     pt: string;
   };
+  image?: {
+    src: string;
+  } | null; // <--- CAMPO NOVO ADICIONADO
 }
 
 export interface Product {

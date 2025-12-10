@@ -5,10 +5,7 @@ const ACCESS_TOKEN = process.env.NUVEMSHOP_ACCESS_TOKEN;
 const API_URL = `https://api.nuvemshop.com.br/v1/${STORE_ID}`;
 
 export async function getProducts(): Promise<Product[]> {
-  if (!STORE_ID || !ACCESS_TOKEN) {
-    console.error("❌ [Nuvemshop] Credenciais faltando no .env.local");
-    return [];
-  }
+  if (!STORE_ID || !ACCESS_TOKEN) return [];
 
   try {
     let allProducts: Product[] = [];
@@ -27,10 +24,7 @@ export async function getProducts(): Promise<Product[]> {
         next: { revalidate: 3600 }
       });
 
-      if (!res.ok) {
-        console.error(`❌ [Nuvemshop API] Erro ${res.status}`);
-        break;
-      }
+      if (!res.ok) break;
 
       const data: Product[] = await res.json();
       
@@ -50,7 +44,7 @@ export async function getProducts(): Promise<Product[]> {
     return allProducts.filter(p => p.published);
 
   } catch (error) {
-    console.error("❌ [Nuvemshop] Erro ao buscar produtos:", error);
+    console.error("❌ [Nuvemshop] Erro produtos:", error);
     return [];
   }
 }
@@ -79,10 +73,10 @@ export async function getCategories(): Promise<Category[]> {
         "User-Agent": "MundoFemme (dev@loja.com)",
         "Content-Type": "application/json"
       },
-      next: { revalidate: 3600 } // Cache restaurado
+      next: { revalidate: 3600 }
     });
 
-    if (!res.ok) throw new Error("Erro ao buscar categorias");
+    if (!res.ok) throw new Error("Erro API");
     
     return await res.json();
   } catch (error) {
@@ -111,7 +105,6 @@ export async function searchProducts(query: string): Promise<Product[]> {
       product.description.pt.toLowerCase().includes(lowerQuery)
     );
   } catch (error) {
-    console.error("❌ [Nuvemshop] Erro na busca:", error);
     return [];
   }
 }

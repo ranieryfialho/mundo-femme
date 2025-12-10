@@ -5,19 +5,24 @@ import { CustomBreadcrumb } from "@/components/ui/custom-breadcrumb";
 import { ArrowRight } from "lucide-react";
 
 const COLLECTION_IMAGES: Record<string, string> = {
-  "invisive": "https://images.unsplash.com/photo-1596483424683-9bb6fa69c0d9?q=80&w=2070&auto=format&fit=crop",
+  "colecao": "https://d1a9qnv764bsoo.cloudfront.net/stores/002/359/702/categories/captura-de-tela-de-2025-12-10-13-47-18-4f3123291bee40531b17653871964738-1024-1024.png",
+  
+  // Exemplo para futuras coleções
   "verao": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2070&auto=format&fit=crop",
-  // Adicione aqui as imagens das próximas coleções usando o handle
 };
 
+// Categorias que não devem aparecer na lista
 const EXCLUDED_HANDLES = ["feminino", "masculino", "infantil"];
 
 export default async function CollectionsPage() {
   const allCategories = await getCategories();
 
   const collections = allCategories.filter(cat => {
+    // 1. Apenas categorias principais (sem pai)
     const isRoot = !cat.parent || cat.parent === null;
-        const handle = cat.handle.pt.toLowerCase();
+    
+    // 2. Remove as categorias excluídas
+    const handle = cat.handle.pt.toLowerCase();
     const isNotExcluded = !EXCLUDED_HANDLES.includes(handle);
 
     return isRoot && isNotExcluded;
@@ -37,42 +42,47 @@ export default async function CollectionsPage() {
           <h1 className="font-serif text-4xl md:text-5xl text-brand-dark mt-6 mb-4">
             Nossas Coleções
           </h1>
-          <p className="font-sans text-gray-500 leading-relaxed">
-            Descubra nossas linhas exclusivas, pensadas para cada momento do seu dia. Do conforto invisível à elegância da renda.
+          <p className="font-sans text-gray-500 max-w-2xl leading-relaxed">
+            Descubra nossas linhas exclusivas, pensadas para cada momento do seu dia.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8">
           {collections.map((collection) => {
-            const bgImage = COLLECTION_IMAGES[collection.handle.pt] || "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"; 
+            const handleKey = collection.handle.pt.toLowerCase();
+            
+            // Pega a imagem do mapa manual ou usa um placeholder
+            const bgImage = COLLECTION_IMAGES[handleKey] || 
+                            "https://d1a9qnv764bsoo.cloudfront.net/stores/002/359/702/categories/captura-de-tela-de-2025-12-10-13-47-18-4f3123291bee40531b17653871964738-1024-1024.png"; 
 
             return (
               <Link 
                 key={collection.id} 
                 href={`/categoria/${collection.handle.pt}`}
-                className="group relative h-[400px] overflow-hidden rounded-sm block"
+                className="group relative h-[400px] w-full overflow-hidden rounded-sm block"
               >
-                {/* Imagem */}
                 <Image
                   src={bgImage}
                   alt={collection.name.pt}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  priority={true}
+                  sizes="100vw"
                 />
                 
-                {/* Overlay */}
+                {/* Overlay Escuro */}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
-
-                {/* Conteúdo do Card */}
+                
+                {/* Conteúdo */}
                 <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
                   <span className="text-white/90 font-sans text-xs uppercase tracking-widest mb-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
                     Ver Produtos
                   </span>
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-serif text-3xl md:text-4xl text-white drop-shadow-md">
+                  <div className="flex items-center justify-between w-full">
+                    <h2 className="font-serif text-3xl md:text-5xl text-white drop-shadow-md">
                       {collection.name.pt}
                     </h2>
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-dark opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0 hover:bg-brand-pink hover:text-white">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-dark opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0 hover:bg-brand-pink hover:text-white shrink-0 ml-4">
                       <ArrowRight size={20} />
                     </div>
                   </div>
@@ -83,13 +93,11 @@ export default async function CollectionsPage() {
         </div>
 
         {collections.length === 0 && (
-          <div className="text-center py-24 border border-dashed border-gray-200 rounded-lg bg-brand-offwhite/30 mt-8">
-            <div className="max-w-md mx-auto">
-              <h3 className="font-serif text-2xl text-brand-dark mb-2">Em breve novas coleções</h3>
-              <p className="text-gray-500 font-sans text-sm">
-                Estamos preparando novidades exclusivas para você.
-              </p>
-            </div>
+          <div className="w-full flex flex-col items-center justify-center py-24 border border-dashed border-gray-200 rounded-lg bg-brand-offwhite/30 mt-8">
+            <h3 className="font-serif text-2xl text-brand-dark mb-2">Em breve novas coleções</h3>
+            <p className="text-gray-500 font-sans text-sm">
+              Estamos preparando novidades exclusivas para você.
+            </p>
           </div>
         )}
 
